@@ -2,7 +2,7 @@ export interface Message {
     id: string;
     author: Author;
     text: string;
-    timestamp: Date;
+    timestampMs: number;
 }
 
 export enum AuthorType {

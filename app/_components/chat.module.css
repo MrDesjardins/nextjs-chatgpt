@@ -1,0 +1,44 @@
+.chatSection {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chatMessages {
+  flex: 1;
+  background-color: blue;
+  overflow: auto;
+  position:relative; /*Allows the button to scroll back to be absolute*/
+
+}
+
+.chatMessage {
+  border: 1px solid #ccc;
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 4px;
+  max-width: 300px;
+}
+
+.chatInput {
+  flex: 0 0 40px;
+  gap: 10px;
+  background-color: red;
+  display: flex;
+}
+
+.chatInputField {
+  flex: 1;
+}
+
+.chatInputButton {
+  flex: 0 0 80px;
+}
+
+
+.scrollBackButton {
+  position:absolute;
+  bottom:20px;
+  width:200px;
+  left:calc(50% - 100px);
+}
