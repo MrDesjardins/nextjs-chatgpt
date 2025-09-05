@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Message } from "../_models/chat";
 import styles from "./chat.module.css";
+import { ChatMessage } from "./ChatMessage";
 export interface ChatMessagesProps {
   messages: Message[];
 }
@@ -16,8 +17,16 @@ export function ChatMessages(props: ChatMessagesProps) {
   const onScrollEvent = () => {
     const chatMessages = chatMessagesRef.current;
     if (chatMessages) {
-      console.log("Scroll Top:", chatMessages.scrollTop, chatMessages.scrollHeight, chatMessages.clientHeight);
-      setIsShowScrollBack(chatMessages.scrollTop + chatMessages.clientHeight + 100 < chatMessages.scrollHeight );
+      console.log(
+        "Scroll Top:",
+        chatMessages.scrollTop,
+        chatMessages.scrollHeight,
+        chatMessages.clientHeight
+      );
+      setIsShowScrollBack(
+        chatMessages.scrollTop + chatMessages.clientHeight + 100 <
+          chatMessages.scrollHeight
+      );
     }
   };
   useEffect(() => {
@@ -33,10 +42,7 @@ export function ChatMessages(props: ChatMessagesProps) {
     <div className={styles.chatMessages} ref={chatMessagesRef}>
       {props.messages.map((message) => (
         <div key={message.id} className={styles.chatMessage}>
-          <span className={styles.chatMessageAuthor}>
-            {message.author.name}
-          </span>
-          <span className={styles.chatMessageText}>{message.text}</span>
+          <ChatMessage message={message} />
         </div>
       ))}
       {isShowScrollBack && (
@@ -44,7 +50,10 @@ export function ChatMessages(props: ChatMessagesProps) {
           className={styles.scrollBackButton}
           onClick={() => {
             if (chatMessagesRef.current) {
-              chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+              chatMessagesRef.current.scrollTo({
+                top: chatMessagesRef.current.scrollHeight,
+                behavior: "smooth",
+              });
             }
           }}
         >

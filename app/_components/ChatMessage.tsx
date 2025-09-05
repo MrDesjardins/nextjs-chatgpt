@@ -7,8 +7,10 @@ export interface ChatMessageProps {
 export function ChatMessage(props:ChatMessageProps) {
     return (
         <div className={styles.chatMessage}>
-            <span className={styles.chatMessageAuthor}>{props.message.author.name}</span>
-            <span className={styles.chatMessageText}>{props.message.text}</span>
+            <div className={styles.chatMessageContent}>
+                <span className={styles.chatMessageAuthor}>{props.message.author.name}</span>
+                <span className={styles.chatMessageText}>{props.message.text}</span>
+            </div>
         </div>
     );
 }
