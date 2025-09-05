@@ -12,7 +12,15 @@
 }
 
 .chatMessage {
-  position: relative;
+  display: flex;
+}
+
+.chatMessageLeft {
+  justify-content: flex-start;
+}
+
+.chatMessageRight {
+  justify-content: flex-end;
 }
 
 .chatMessageContent {
@@ -21,6 +29,17 @@
   padding: 8px;
   margin: 10px 0;
   border-radius: 4px;
+}
+
+.chatMessageLeft .chatMessageContent {
+  background: #e5e5ea; /* light gray */
+  text-align: left;
+}
+
+.chatMessageRight .chatMessageContent {
+  background: #0078fe; /* blue */
+  color: white;
+  text-align: right;
 }
 
 .chatInput {

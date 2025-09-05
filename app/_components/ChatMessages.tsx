@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Message } from "../_models/chat";
+import { AuthorType, Message } from "../_models/chat";
 import styles from "./chat.module.css";
 import { ChatMessage } from "./ChatMessage";
 export interface ChatMessagesProps {
@@ -41,7 +41,14 @@ export function ChatMessages(props: ChatMessagesProps) {
   return (
     <div className={styles.chatMessages} ref={chatMessagesRef}>
       {props.messages.map((message) => (
-        <div key={message.id} className={styles.chatMessage}>
+        <div
+          key={message.id}
+          className={`${styles.chatMessage} ${
+            message.author.type === AuthorType.AI
+              ? styles.chatMessageRight
+              : styles.chatMessageLeft
+          }`}
+        >
           <ChatMessage message={message} />
         </div>
       ))}
