@@ -4,6 +4,7 @@ import styles from "./chat.module.css";
 
 export interface ChatInputProps {
   onSend: (txt: string) => void;
+  isProcessing: boolean;
 }
 export function ChatInput(props: ChatInputProps) {
   const [inputValue, setInputValue] = useState("");
@@ -20,7 +21,12 @@ export function ChatInput(props: ChatInputProps) {
         onKeyDown={(e) => e.key === "Enter" && onSend()}
         value={inputValue}
       />
-      <button className={styles.chatInputButton} onClick={onSend}>
+      <button
+        className={styles.chatInputButton}
+        onClick={onSend}
+        disabled={props.isProcessing}
+        title={props.isProcessing ? "Waiting LLM" : "Send"}
+      >
         Send
       </button>
     </div>

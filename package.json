@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "NODE_OPTIONS='--inspect' next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "next": "15.5.2",
+    "openai": "^5.19.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "uuidv7": "^1.0.2"

@@ -24,7 +24,7 @@
 }
 
 .chatMessageContent {
-  max-width: 300px;
+  max-width: 600px;
   border: 1px solid #ccc;
   padding: 8px;
   margin: 10px 0;
@@ -33,13 +33,21 @@
 
 .chatMessageLeft .chatMessageContent {
   background: #e5e5ea; /* light gray */
+  color: black;
   text-align: left;
 }
 
 .chatMessageRight .chatMessageContent {
-  background: #0078fe; /* blue */
-  color: white;
+  color: rgb(25, 24, 36);
   text-align: right;
+}
+
+.chatMessageRight.chatMessageSuccess .chatMessageContent {
+  background-color: rgb(212, 252, 185);
+}
+
+.chatMessageRight.chatMessageError .chatMessageContent {
+  background-color: rgb(248, 155, 155);
 }
 
 .chatInput {

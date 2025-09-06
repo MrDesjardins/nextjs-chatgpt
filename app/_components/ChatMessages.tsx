@@ -41,16 +41,7 @@ export function ChatMessages(props: ChatMessagesProps) {
   return (
     <div className={styles.chatMessages} ref={chatMessagesRef}>
       {props.messages.map((message) => (
-        <div
-          key={message.id}
-          className={`${styles.chatMessage} ${
-            message.author.type === AuthorType.AI
-              ? styles.chatMessageRight
-              : styles.chatMessageLeft
-          }`}
-        >
-          <ChatMessage message={message} />
-        </div>
+        <ChatMessage key={message.id} message={message} />
       ))}
       {isShowScrollBack && (
         <button

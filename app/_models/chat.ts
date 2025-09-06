@@ -3,6 +3,7 @@ export interface Message {
     author: Author;
     text: string;
     timestampMs: number;
+    isSuccess: boolean;
 }
 
 export enum AuthorType {
@@ -16,3 +17,10 @@ export interface Author {
     name: string;
     avatar: string;
 }
+
+export const ChatGPTAuthor: Author = {
+    id: "chatgpt",
+    type: AuthorType.AI,
+    name: "ChatGPT",
+    avatar: "/avatars/chatgpt.png"
+};
