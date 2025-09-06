@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     const response = await client.responses.create({
       model: "gpt-5-mini",
-      input: userMessage.message,
+      input: userMessage.messages,
     });
 
     return NextResponse.json({

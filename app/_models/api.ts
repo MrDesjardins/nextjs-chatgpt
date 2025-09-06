@@ -10,6 +10,10 @@ export interface APILLMResponseError {
 
 export type ApiLLMResponse = APILLMResponseSuccess | APILLMResponseError;
 
+export interface LLMMessage{
+  role: "system" | "user" | "assistant";
+  content: string;
+}
 export interface APILLMRequest {
-  message: string;
+  messages: LLMMessage[]
 }

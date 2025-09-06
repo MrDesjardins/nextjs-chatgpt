@@ -3,9 +3,9 @@ import { useState } from "react";
 import { ChatInput } from "./ChatInput";
 import { ChatMessages } from "./ChatMessages";
 import styles from "./chat.module.css";
-import { Author, ChatGPTAuthor, Message } from "../_models/chat";
+import { Author, AuthorType, ChatGPTAuthor, Message } from "../_models/chat";
 import { uuidv7 } from "uuidv7";
-import { APILLMRequest, ApiLLMResponse } from "../_models/api";
+import { APILLMRequest, ApiLLMResponse, LLMMessage } from "../_models/api";
 export interface ChatSectionProps {
   author: Author;
 }
@@ -24,7 +24,7 @@ export function ChatSection(props: ChatSectionProps) {
     const newAllMessages = [...messages, newMessage];
     setMessages(newAllMessages);
     setIsProcessing(true);
-    const newMessageLLM: Message = await sendRequestToLLM(txt, newMessage);
+    const newMessageLLM: Message = await sendRequestToLLM(txt, newAllMessages);
     setMessages([...newAllMessages, newMessageLLM]);
     setIsProcessing(false);
   };
@@ -35,13 +35,19 @@ export function ChatSection(props: ChatSectionProps) {
     </div>
   );
 }
-async function sendRequestToLLM(txt: string, newMessage: Message) {
+async function sendRequestToLLM(
+  txt: string,
+  allMessages: Message[]
+): Promise<Message> {
+  const responseBody: APILLMRequest = {
+    messages: mapMessageToLLM(allMessages),
+  };
   const response = await fetch("/api/llm", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ message: txt } satisfies APILLMRequest),
+    body: JSON.stringify(responseBody),
   });
   const data = (await response.json()) as ApiLLMResponse;
   const newMessageLLM: Message = {
@@ -54,9 +60,15 @@ async function sendRequestToLLM(txt: string, newMessage: Message) {
   if (data.type === "success") {
     newMessageLLM.text = data.response;
   } else {
-    newMessage.text = data.error;
-    newMessage.isSuccess = false;
+    newMessageLLM.text = data.error;
+    newMessageLLM.isSuccess = false;
   }
   return newMessageLLM;
 }
 
+function mapMessageToLLM(messages: Message[]): LLMMessage[] {
+  return messages.map((msg) => ({
+    role: msg.author.type === AuthorType.AI ? "assistant" : "user",
+    content: msg.text,
+  }));
+}
