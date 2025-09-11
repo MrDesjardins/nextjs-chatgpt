@@ -6,6 +6,7 @@ import styles from "./chat.module.css";
 import { Author, AuthorType, ChatGPTAuthor, Message } from "../_models/chat";
 import { uuidv7 } from "uuidv7";
 import {
+  APILLM_CLEAR_TOKEN,
   APILLM_CREATED_TOKEN,
   APILLM_END_TOKEN,
   APILLM_THINKIN_TOKEN,
@@ -64,7 +65,12 @@ export function ChatSection(props: ChatSectionProps) {
             setMessages((existings) => {
               return getNewMessagesList(existings, id, "Thinking...", false);
             });
-          } else {
+          } else if (msg === APILLM_CLEAR_TOKEN) {
+            setMessages((existings) => {
+              return getNewMessagesList(existings, id, "", false);
+            });
+          } 
+          else {
             setMessages((existings) => {
               return getNewMessagesList(existings, id, msg, true);
             });

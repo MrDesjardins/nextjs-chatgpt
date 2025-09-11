@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { APILLM_CREATED_TOKEN, APILLM_END_TOKEN, APILLM_THINKIN_TOKEN, APILLMResponseError } from "../../_models/api";
+import { APILLM_CLEAR_TOKEN, APILLM_CREATED_TOKEN, APILLM_END_TOKEN, APILLM_THINKIN_TOKEN, APILLMResponseError } from "../../_models/api";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -37,6 +37,10 @@ export async function GET(request: NextRequest) {
           }
           else if(event.type === "response.in_progress") {
             const data = `data: ${APILLM_THINKIN_TOKEN}\n\n`;
+            controller.enqueue(encoder.encode(data));
+          }
+          else if(event.type === "response.content_part.added" && event.part.type==="output_text") {
+            const data = `data: ${APILLM_CLEAR_TOKEN}\n\n`;
             controller.enqueue(encoder.encode(data));
           }
           else if (

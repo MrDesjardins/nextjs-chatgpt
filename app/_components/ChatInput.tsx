@@ -16,6 +16,7 @@ export function ChatInput(props: ChatInputProps) {
     <div className={styles.chatInput}>
       <input
         type="text"
+        disabled={props.isProcessing}
         className={styles.chatInputField}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && onSend()}
