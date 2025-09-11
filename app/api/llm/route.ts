@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import { APILLMRequest, APILLMResponseError, APILLMResponseSuccess } from "../../_models/api";
+import {
+  APILLMRequest,
+  APILLMResponseError,
+  APILLMResponseSuccess,
+} from "../../_models/api";
 
 export async function POST(request: Request) {
   const userMessage = await request.json() as APILLMRequest;

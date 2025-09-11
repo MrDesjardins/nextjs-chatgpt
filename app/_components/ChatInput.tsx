@@ -3,13 +3,13 @@ import { useState } from "react";
 import styles from "./chat.module.css";
 
 export interface ChatInputProps {
-  onSend: (txt: string) => void;
+  onSend: (txt: string, isStreaming: boolean) => void;
   isProcessing: boolean;
 }
 export function ChatInput(props: ChatInputProps) {
   const [inputValue, setInputValue] = useState("");
   const onSend = () => {
-    props.onSend(inputValue);
+    props.onSend(inputValue, true);
     setInputValue("");
   };
   return (

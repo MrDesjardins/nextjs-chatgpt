@@ -17,3 +17,7 @@ export interface LLMMessage{
 export interface APILLMRequest {
   messages: LLMMessage[]
 }
+
+export const APILLM_END_TOKEN = "[done]";
+export const APILLM_CREATED_TOKEN = "[created]";
+export const APILLM_THINKIN_TOKEN = "[thinking]";
