@@ -9,7 +9,7 @@ import {
   APILLM_CLEAR_TOKEN,
   APILLM_CREATED_TOKEN,
   APILLM_END_TOKEN,
-  APILLM_THINKIN_TOKEN,
+  APILLM_THINKING_TOKEN,
   APILLMRequest,
   ApiLLMResponse,
   LLMMessage,
@@ -46,40 +46,47 @@ export function ChatSection(props: ChatSectionProps) {
     setMessages(newAllMessages);
     setIsProcessing(true);
     if (isStreaming) {
-      streamMessages(
-        txt,
-        (newMessageLLM: Message) => {
-          setMessages([...newAllMessages, newMessageLLM]);
-        },
-        (id: string, msg: string) => {
-          if (msg === APILLM_CREATED_TOKEN) {
-            setMessages((existings) => {
-              return getNewMessagesList(
-                existings,
-                id,
-                "Request started...",
-                false
-              );
-            });
-          } else if (msg === APILLM_THINKIN_TOKEN) {
-            setMessages((existings) => {
-              return getNewMessagesList(existings, id, "Thinking...", false);
-            });
-          } else if (msg === APILLM_CLEAR_TOKEN) {
-            setMessages((existings) => {
-              return getNewMessagesList(existings, id, "", false);
-            });
-          } 
-          else {
-            setMessages((existings) => {
-              return getNewMessagesList(existings, id, msg, true);
-            });
+      try {
+        await streamMessages(
+          newAllMessages,
+          (newMessageLLM: Message) => {
+            setMessages([...newAllMessages, newMessageLLM]);
+          },
+          (id: string, msg: string) => {
+            if (msg.indexOf(APILLM_CREATED_TOKEN) >= 0) {
+              setMessages((existings) => {
+                return getNewMessagesList(
+                  existings,
+                  id,
+                  "Request started...",
+                  false
+                );
+              });
+            } else if (msg.indexOf(APILLM_THINKING_TOKEN) >= 0) {
+              setMessages((existings) => {
+                return getNewMessagesList(existings, id, "Thinking...", false);
+              });
+            } else if (msg.indexOf(APILLM_CLEAR_TOKEN) >= 0) {
+              const start = msg.indexOf(APILLM_CLEAR_TOKEN) + APILLM_CLEAR_TOKEN.length;
+              const rest = msg.substring(start);
+              setMessages((existings) => {
+                return getNewMessagesList(existings, id, rest, false);
+              });
+            } else {
+              setMessages((existings) => {
+                return getNewMessagesList(existings, id, msg, true);
+              });
+            }
+          },
+          () => {
+            setIsProcessing(false);
           }
-        },
-        () => {
-          setIsProcessing(false);
-        }
-      );
+        );
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsProcessing(false);
+      }
     } else {
       const newMessageLLM: Message = await sendRequestToLLM(
         txt,
@@ -134,13 +141,13 @@ function mapMessageToLLM(messages: Message[]): LLMMessage[] {
   }));
 }
 
-function streamMessages(
-  txt: string,
+async function streamMessages(
+  messages: Message[],
   create: (msg: Message) => void,
   edit: (id: string, msg: string) => void,
-  done: () => void
+  completeSignal: () => void
 ) {
-  const eventSource = new EventSource(`/api/llmstream?txt=${txt}`);
+  // Response message
   const msgStream: Message = {
     timestampMs: Date.now(),
     text: "",
@@ -148,17 +155,27 @@ function streamMessages(
     author: ChatGPTAuthor,
     isSuccess: true,
   };
-  create(msgStream);
-  eventSource.onmessage = (event) => {
-    if (event.data === APILLM_END_TOKEN) {
-      done();
-    } else {
-      edit(msgStream.id, event.data);
-    }
-  };
+  const response = await fetch("/api/llmstream", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages }),
+  });
+  create(msgStream); // Add the new message to the list
 
-  eventSource.onerror = (error) => {
-    console.error("EventSource error:", error);
-    eventSource.close();
-  };
+  const reader = response.body?.getReader();
+  const decoder = new TextDecoder();
+
+  while (true && reader) {
+    const { done, value } = await reader.read();
+    if (done) {
+      break;
+    }
+
+    const chunk = decoder.decode(value, { stream: true });
+    if (chunk.indexOf(APILLM_END_TOKEN) >= 0) {
+      completeSignal();
+    } else {
+      edit(msgStream.id, chunk);
+    }
+  }
 }

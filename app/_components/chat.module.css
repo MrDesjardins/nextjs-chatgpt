@@ -39,7 +39,7 @@
 
 .chatMessageRight .chatMessageContent {
   color: rgb(25, 24, 36);
-  text-align: right;
+  white-space: pre-wrap;
 }
 
 .chatMessageRight.chatMessageSuccess .chatMessageContent {
@@ -54,10 +54,23 @@
   flex: 0 0 40px;
   gap: 10px;
   display: flex;
+
+  padding: 12px;
+  border: 2px solid gray;
+  border-radius: 10px;
 }
 
 .chatInputField {
   flex: 1;
+  padding:6px;
+  resize: none;
+  width: 100%;
+  max-height: 9em;
+  border:0;
+}
+
+.chatInputField:focus{
+   outline: none;
 }
 
 .chatInputButton {

@@ -20,5 +20,5 @@ export interface APILLMRequest {
 
 export const APILLM_END_TOKEN = "[done]";
 export const APILLM_CREATED_TOKEN = "[created]";
-export const APILLM_THINKIN_TOKEN = "[thinking]";
+export const APILLM_THINKING_TOKEN = "[thinking]";
 export const APILLM_CLEAR_TOKEN = "[clear]";
